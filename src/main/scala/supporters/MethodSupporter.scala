@@ -20,6 +20,7 @@ import viper.silicon.verifier.{Verifier, VerifierComponent}
 import viper.silicon.utils.freshSnap
 import viper.silver.reporter.AnnotationWarning
 import viper.silicon.{Map, toMap}
+import extensions.SiliconIterativeSimplifier.{checkRedAccField, checkTestAcc, npfRecSimplify, nsimplify, testStandalone}
 
 /* TODO: Consider changing the DefaultMethodVerificationUnitProvider into a SymbolicExecutionRule */
 
@@ -85,6 +86,18 @@ trait DefaultMethodVerificationUnitProvider extends VerifierComponent { v: Verif
                          h = Heap(),
                          oldHeaps = OldHeaps(),
                          methodCfg = body)
+
+      testStandalone(s, pres.head, v){ res =>
+
+        res match {
+          case None => println("No simplification")
+          //case Some(simp) => println("simplification")
+          case Some(simp) => println(simp.toString)
+        }
+        Success()
+      }
+
+
 
       if (Verifier.config.printMethodCFGs()) {
         viper.silicon.common.io.toFile(
